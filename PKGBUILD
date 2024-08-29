@@ -1,6 +1,6 @@
 # Maintainer: Nick Dowsett <nick42d AT gmail DOT com>
 pkgname=clevo-drivers-dkms-git
-_pkgname=tuxedo-drivers
+_pkgname=clevo-drivers
 pkgver=4.6.2
 pkgrel=1
 pkgdesc="Kernel module drivers for keyboard, keyboard backlight & general hardware I/O using the SysFS interface for Clevo hardware."
@@ -35,7 +35,7 @@ sha256sums=('SKIP'
 
 prepare(){
 	echo "$(ls)"
-	cd ${srcdir}/${_pkgname}
+	cd ${srcdir}/tuxedo-drivers
 	echo "Current directory is: $(pwd)"
 	pkgver=$(git tag | tail -1 | tr -d "v")
 	echo "pkgver is "${pkgver}
@@ -45,7 +45,7 @@ prepare(){
 package() {
 	echo "Package step"
 	mkdir -p "${pkgdir}/usr/src/${_pkgname}-${pkgver}"
-	ln -s ${srcdir}/${_pkgname} ${srcdir}/${_pkgname}-${pkgver}
+	ln -s ${srcdir}/tuxedo-drivers ${srcdir}/${_pkgname}-${pkgver}
 	sed -i "s/#MODULE_VERSION#/${pkgver}/" dkms.conf
 	install -Dm644 dkms.conf -t "$pkgdir/usr/src/${_pkgname%}-$pkgver/"
 	install -Dm644 "${_pkgname%}-$pkgver"/Makefile -t "$pkgdir/usr/src/${_pkgname%}-$pkgver/"
