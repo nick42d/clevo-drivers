@@ -8,6 +8,7 @@ url="https://gitlab.com/evorster/clevo-drivers"
 license=("Other")
 arch=('x86_64')
 depends=('dkms')
+makedepends=('git')
 optdepends=('linux-headers: build modules against Arch kernel'
             'linux-lts-headers: build modules against LTS kernel'
             'linux-zen-headers: build modules against ZEN kernel'
