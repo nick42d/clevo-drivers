@@ -4,7 +4,7 @@
 test-this-ver:
     echo "Testing makepkg"
     rm -rf pkg/ src/ tuxedo-drivers/
-    makepkg -f
+    makepkg -f --cleanbuild --nodeps
     
 # Check if upstream has updated version
 check-upstream-ver: 
@@ -33,7 +33,7 @@ update-to-upstream:
         cp PKGBUILD PKGBUILD.bak
         cp .SRCINFO .SRCINFO.bak
         sed -i "s/^pkgver=$cur_ver/pkgver=$new_ver/" PKGBUILD
-        if updpkgsums && makepkg -f && makepkg --printsrcinfo > .SRCINFO; then
+        if updpkgsums && makepkg -f --cleanbuild --nodeps && makepkg --printsrcinfo > .SRCINFO; then
             echo "Update successful"
             exit 0
         else

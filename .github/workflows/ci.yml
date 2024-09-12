@@ -21,6 +21,11 @@ jobs:
         sudo apt update
         sudo apt install -y --no-install-recommends snapd
         sudo snap install just --edge --classic
+
+    - name: Install arch package utils
+      run: |
+        git clone https://gist.github.com/d40de02e9713c991977c415dd09d39ae.git
+        bash d40de02e9713c991977c415dd09d39ae/install-pacman-debian.sh
       
     - name: Test this ver
       run: just test-this-ver
