@@ -19,7 +19,8 @@ jobs:
     - name: Install linux deps
       run: |
         sudo apt update
-        sudo apt install -y --no-install-recommends just makepkg
+        sudo apt install -y --no-install-recommends snapd
+        sudo snap install just --edge --classic
       
     - name: Test this ver
       run: just test-this-ver
