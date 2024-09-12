@@ -22,9 +22,7 @@ jobs:
         sudo snap install just --edge --classic
       
     - name: Install arch package utils
-      run: |
-        git clone https://gist.github.com/d40de02e9713c991977c415dd09d39ae.git
-        bash d40de02e9713c991977c415dd09d39ae/install-pacman-debian.sh
+      run: bash install-pacman-debian.sh
 
     - name: Check upstream ver
       continue-on-error: true
