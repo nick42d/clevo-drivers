@@ -44,7 +44,7 @@ update-to-upstream:
         fi
     else 
         echo "Already at latest version $new_ver"
-        exit 1
+        exit 0
     fi
 
 # Push to AUR

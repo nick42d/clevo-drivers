@@ -1,0 +1,33 @@
+name: Scheduled tests
+
+on:
+  schedule:
+    # Once a week at 5:30 on a saturday
+    - cron: '30 5 * * 6'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        toolchain: [stable]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install linux deps
+      run: |
+        sudo apt update
+        sudo apt install -y --no-install-recommends just makepkg
+      
+    - name: Check upstream ver
+      continue-on-error: true
+      run: just check-upstream-ver
+      
+    - name: Test this ver
+      continue-on-error: true
+      run: just test-this-ver
+      
+    - name: Test upstream ver
+      run: just update-to-upstream
+      
