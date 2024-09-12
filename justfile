@@ -31,16 +31,22 @@ update-to-upstream:
     if [ "$cur_ver" != "$new_ver" ]; then
         echo "Updating PKGBUILD to $new_ver from $cur_ver"
         cp PKGBUILD PKGBUILD.bak
+        cp .SRCINFO .SRCINFO.bak
         sed -i "s/^pkgver=$cur_ver/pkgver=$new_ver/" PKGBUILD
-        if updpkgsums && makepkg -f; then
+        if updpkgsums && makepkg -f && makepkg --printsrcinfo > .SRCINFO; then
             echo "Update successful"
             exit 0
         else
-            echo "New PKGBUILD failed - reverting"
+            echo "New PKGBUILD / .SRCINFO failed - reverting"
             cp PKGBUILD.bak PKGBUILD
+            cp .SRCINFO.bak .SRCINFO
             exit 1
         fi
     else 
         echo "Already at latest version $new_ver"
         exit 1
     fi
+
+# Push to AUR
+push-to-aur:
+    echo "TODO: remove redundant folders, clone AUR repo, copy files, cd aur repo, push aur repo"

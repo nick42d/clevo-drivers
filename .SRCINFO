@@ -1,0 +1,36 @@
+pkgbase = clevo-drivers-dkms-git
+	pkgdesc = Kernel module drivers for keyboard, keyboard backlight & general hardware I/O using the SysFS interface for Clevo hardware.
+	pkgver = 4.6.3
+	pkgrel = 1
+	url = https://gitlab.com/evorster/clevo-drivers
+	arch = x86_64
+	license = Other
+	depends = dkms
+	optdepends = linux-headers: build modules against Arch kernel
+	optdepends = linux-lts-headers: build modules against LTS kernel
+	optdepends = linux-zen-headers: build modules against ZEN kernel
+	optdepends = linux-hardened-headers: build modules against the HARDENED kernel
+	provides = tuxedo-drivers-dkms
+	provides = tuxedo-keyboard
+	provides = tuxedo-keyboard-ite
+	provides = tuxedo-io
+	provides = clevo-wmi
+	provides = clevo-acpi
+	provides = uniwill-wmi
+	provides = ite_8291
+	provides = ite_8291_lb
+	provides = ite_8297
+	provides = ite_829x
+	conflicts = tuxedo-drivers-dkms
+	conflicts = tuxedo-keyboard-dkms
+	conflicts = tuxedo-keyboard-ite-dkms
+	source = git+https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers.git#tag=v4.6.3
+	source = patch.diff
+	source = tuxedo_io.conf
+	source = dkms.conf
+	sha256sums = 64becfa3d5b39c6b6f5b0c39f4cee7bcaf3f76d84a6f955635698351ac4fd01b
+	sha256sums = d6bef54bcf39e5aa24b3f1148c4ffc65dd054a23ca3af44787a7d1010169b6b6
+	sha256sums = d94d305bfd2767ad047bc25cc5ce986e76804e7376c3dd4d8e500ebe2c7bef3c
+	sha256sums = 4c83b8508698c49246fedf31dbe329ceff5132707afb4fa2df4ccc6c9e1e9db8
+
+pkgname = clevo-drivers-dkms-git
