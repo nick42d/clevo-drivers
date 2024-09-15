@@ -53,7 +53,7 @@ push-to-aur COMMIT-MSG:
     # https://just.systems/man/en/chapter_45.html
     set -euxo pipefail
     echo "Pushing to AUR"
-    rm -rf pkg/ src/ tuxedo-drivers/ aur/
+    rm -rf aur/
     git clone ssh://aur@aur.archlinux.org/clevo-drivers-dkms-git.git aur
     # TODO: consider what to do about the dkms.conf and tuxedo_id.conf files.
     cp PKGBUILD aur/PKGBUILD .SRCINFO aur/SRCINFO
