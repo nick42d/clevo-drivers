@@ -56,7 +56,9 @@ push-to-aur COMMIT-MSG:
     rm -rf aur/
     git clone ssh://aur@aur.archlinux.org/clevo-drivers-dkms-git.git aur
     # TODO: consider what to do about the dkms.conf and tuxedo_id.conf files.
-    cp PKGBUILD aur/PKGBUILD .SRCINFO aur/SRCINFO
+    cp PKGBUILD aur/PKGBUILD
+    cp .SRCINFO aur/SRCINFO
+    cp patch.diff aur/patch.diff
     cd aur
     git commit -am {{COMMIT-MSG}}
     git push
