@@ -33,7 +33,10 @@ update-to-upstream:
         cp PKGBUILD PKGBUILD.bak
         cp .SRCINFO .SRCINFO.bak
         sed -i "s/^pkgver=$cur_ver/pkgver=$new_ver/" PKGBUILD
-        if updpkgsums && makepkg -f --cleanbuild --nodeps && makepkg --printsrcinfo > .SRCINFO; then
+        if ./updpkgsums \
+            && makepkg -f --cleanbuild --nodeps \
+            && make -C ./src/clevo-drivers-$new_ver \
+            && makepkg --printsrcinfo > .SRCINFO; then
             echo "Update successful"
             exit 0
         else
