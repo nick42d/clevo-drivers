@@ -22,7 +22,7 @@ jobs:
 
     #makepkg can't run as root
     - name: Reduce priviledges
-      ru: su nobody
+      run: su nobody
       
     - name: Test makepkg
       run: just makepkg
