@@ -23,8 +23,7 @@ jobs:
     - name: Test makepkg
       # NOTE: makepkg can't run as root so this is the workaround
       run: |
-        pwd
-        sudo chown -R nobody:nobody *
+        sudo chown -R nobody:nobody .
         sudo -u nobody just makepkg
 
     - name: namcap
