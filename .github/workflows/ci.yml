@@ -18,7 +18,7 @@ jobs:
     - name: Install linux deps
       run: |
         # pacman-contrib is for updpkgsums
-        pacman -Syu just namcap pacman-contrib --noconfirm --needed
+        pacman -Syu sudo just namcap pacman-contrib --noconfirm --needed
 
     # NOTE: makepkg can't run as root
     - name: Test makepkg
