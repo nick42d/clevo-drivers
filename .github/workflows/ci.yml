@@ -19,6 +19,10 @@ jobs:
       run: |
         #pacman-contrib is for updpkgsums
         pacman -Syu just namcap pacman-contrib --noconfirm --needed
+
+    #makepkg can't run as root
+    - name: Reduce priviledges 
+      ru: su nobody
       
     - name: Test makepkg
       run: just makepkg
