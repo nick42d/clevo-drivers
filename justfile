@@ -1,10 +1,14 @@
 # Possible tests for clevo-drivers
 
 # Test that package still works and makes
-test-this-ver:
+makepkg:
     echo "Testing makepkg"
     rm -rf pkg/ src/ tuxedo-drivers/
     makepkg -f --cleanbuild --nodeps
+
+# use namcap to check for common errors
+namcap:
+    namcap --info PKGBUILD
     
 # Check if upstream has updated version
 check-upstream-ver: 

@@ -8,29 +8,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        toolchain: [stable]
+    container:
+      image: archlinux
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Install linux deps
       run: |
-        sudo apt update
-        sudo apt install -y --no-install-recommends snapd
-        sudo snap install just --edge --classic
+        #pacman-contrib is for updpkgsums
+        pacman -Syu just namcap pacman-contrib --noconfirm --needed
       
-    - name: Install arch package utils
-      run: bash install-pacman-debian.sh
-
     - name: Check upstream ver
       continue-on-error: true
       run: just check-upstream-ver
       
     - name: Test this ver
       continue-on-error: true
-      run: just test-this-ver
+      run: just makepkg
       
     - name: Test upstream ver
       run: just update-to-upstream
