@@ -20,8 +20,9 @@ jobs:
         # pacman-contrib is for updpkgsums
         pacman -Syu sudo just namcap pacman-contrib --noconfirm --needed
 
-    # NOTE: makepkg can't run as root
     - name: Test makepkg
+      # NOTE: makepkg can't run as root so this is the workaround
+      run: sudo chown -R nobody:nobody *
       run: sudo -u nobody just makepkg
 
     - name: namcap
