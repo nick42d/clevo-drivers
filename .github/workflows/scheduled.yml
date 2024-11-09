@@ -17,16 +17,20 @@ jobs:
     - name: Install linux deps
       run: |
         #pacman-contrib is for updpkgsums
-        pacman -Syu just namcap pacman-contrib --noconfirm --needed
+        pacman -Syu git base-devel sudo just namcap pacman-contrib --noconfirm --needed
       
     - name: Check upstream ver
       continue-on-error: true
       run: just check-upstream-ver
       
-    - name: Test this ver
-      continue-on-error: true
-      run: just makepkg
+    - name: Test makepkg
+      # NOTE: makepkg can't run as root so this is the workaround
+      run: |
+        sudo chown -R nobody:nobody .
+        sudo -u nobody just makepkg
       
     - name: Test upstream ver
-      run: just update-to-upstream
-      
+      # NOTE: makepkg can't run as root so this is the workaround
+      run: |
+        sudo chown -R nobody:nobody .
+        sudo -u nobody just makepkg
