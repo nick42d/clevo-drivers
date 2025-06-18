@@ -34,13 +34,15 @@ update-to-upstream:
     new_ver=$(grep -Pom1 '.* \(\K.*(?=\) .*; urgency=.*)' tuxedo-drivers/debian/changelog) 
     if [ "$cur_ver" != "$new_ver" ]; then
         echo "Updating PKGBUILD to $new_ver from $cur_ver"
+        kernel_ver=$(uname -r)
+        pwd=$(pwd)
         cp PKGBUILD PKGBUILD.bak
         cp .SRCINFO .SRCINFO.bak
         sed -i "s/^pkgver=$cur_ver/pkgver=$new_ver/" PKGBUILD
         sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
         if ./updpkgsums \
             && makepkg -f --cleanbuild --nodeps \
-            && make -C ./src/clevo-drivers-$new_ver \
+            && make -C /lib/modules/$kernel_ver/build M=$pwd/src/clevo-drivers-$new_ver modules \
             && makepkg --printsrcinfo > .SRCINFO; then
             echo "Update successful"
             exit 0
