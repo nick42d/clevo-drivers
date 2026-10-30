@@ -1,3 +1,6 @@
+# Variables
+pkg_yml := "tuxedo-drivers/package.yml"
+
 # Possible tests for clevo-drivers
 
 # Test that package still works and makes
@@ -10,16 +13,9 @@ makepkg:
 namcap:
     namcap --info PKGBUILD
     
-# Extract latest upstream version from package.yml
-[private]
-upstream-version file="tuxedo-drivers/package.yml":
-    #!/usr/bin/env bash
-    ver=$(sed -E -n '/^changelog:/,$ { /^[[:space:]]*-[[:space:]]*version:[[:space:]]*/ { s/^[[:space:]]*-[[:space:]]*version:[[:space:]]*["\x27]*([0-9]+(\.[0-9]+)+).*/\1/p; q } }' "{{file}}")
-    if [ -z "$ver" ]; then
-        echo "Error: Failed to extract upstream version from {{file}}" >&2
-        exit 1
-    fi
-    echo "$ver"
+# Generate dkms.conf from upstream package.yml
+generate-dkms-conf file=pkg_yml out="dkms.conf":
+    @./generate-dkms-conf.py "{{file}}" "{{out}}"
 
 # Check if upstream has updated version
 check-upstream-ver: 
@@ -27,7 +23,7 @@ check-upstream-ver:
     cur_ver=$(grep -oP '^pkgver=\K(\d+\.)*\d+' PKGBUILD)
     rm -rf tuxedo-drivers/
     git clone https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers.git
-    new_ver=$(just upstream-version)
+    new_ver=$(./extract-latest-version.py {{pkg_yml}})
     if [ "$cur_ver" != "$new_ver" ]; then
         echo "Upstream version $new_ver not equal to local version $cur_ver"
         exit 1
@@ -42,13 +38,14 @@ update-to-upstream:
     cur_ver=$(grep -oP '^pkgver=\K(\d+\.)*\d+' PKGBUILD)
     rm -rf pkg/ src/ tuxedo-drivers/
     git clone https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers.git
-    new_ver=$(just upstream-version)
+    new_ver=$(./extract-latest-version.py {{pkg_yml}})
     if [ "$cur_ver" != "$new_ver" ]; then
         echo "Updating PKGBUILD to $new_ver from $cur_ver"
         kernel_ver=$(uname -r)
         pwd=$(pwd)
         cp PKGBUILD PKGBUILD.bak
         cp .SRCINFO .SRCINFO.bak
+        ./generate-dkms-conf.py {{pkg_yml}} dkms.conf
         sed -i "s/^pkgver=$cur_ver/pkgver=$new_ver/" PKGBUILD
         sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
         if ./updpkgsums \
@@ -79,6 +76,7 @@ push-to-aur COMMIT-MSG:
     cp PKGBUILD aur/PKGBUILD
     cp .SRCINFO aur/.SRCINFO
     cp patch.diff aur/patch.diff
+    cp dkms.conf aur/dkms.conf
     cd aur
     git commit -am '{{COMMIT-MSG}}'
     git push

@@ -17,7 +17,7 @@ jobs:
     - name: Install linux deps
       run: |
         #pacman-contrib is for updpkgsums
-        pacman -Syu git base-devel sudo just namcap pacman-contrib --noconfirm --needed
+        pacman -Syu git base-devel sudo just namcap pacman-contrib python-yaml --noconfirm --needed
       
     - name: Check upstream ver
       continue-on-error: true

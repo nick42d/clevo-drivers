@@ -4,7 +4,7 @@
 
 pkgname=clevo-drivers-dkms-git
 _pkgname=clevo-drivers
-pkgver=4.20.1
+pkgver=4.25.0
 pkgrel=1
 pkgdesc="Unofficial modification of TUXEDO Computers kernel module drivers for keyboard, keyboard backlight & general hardware I/O using the SysFS interface, to allow it to run on other Clevo hardware. Use at your own risk."
 url="https://github.com/nick42d/clevo-drivers"
@@ -30,11 +30,13 @@ provides=('tuxedo-drivers-dkms'
           'ite_829x')
 conflicts=('tuxedo-drivers-dkms' 'tuxedo-keyboard-dkms' 'tuxedo-keyboard-ite-dkms')
 #backup=(etc/modprobe.d/tuxedo_keyboard.conf)
-source=(git+https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers.git#tag=v${pkgver} patch.diff)
-sha256sums=('fed283066751aa0604f8b43eed3ce4cb571bc83fa8ac9917bbaa06a12317c824'
-            'd6bef54bcf39e5aa24b3f1148c4ffc65dd054a23ca3af44787a7d1010169b6b6')
-sha512sums=('3a3f5e479958db64bb92056b86699612660db54ef077c6bc156ce9c778198df2921cb99392ffe5a021b11c3578772c666d0cfccd5ea0a347b9a8cb2d6ba4f4d7'
-            'bcaf2a67bdc37e388931c458cf08fcb0bb05de2c83de51770b700b9aba2cece578366aec90c0edfa18e71cf688b7c203684da4c69a3fae17e7e253f0082036dd')
+source=(git+https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers.git#tag=v${pkgver} patch.diff dkms.conf)
+sha256sums=('34fdc4c9fc4884296382d53dd353452cd69564f2ee87ac911414bbaa2bff0d5f'
+            'd6bef54bcf39e5aa24b3f1148c4ffc65dd054a23ca3af44787a7d1010169b6b6'
+            '1a279f80eb476f1b32ea0c07e0501bc771363ecfbee835b6f884914310c74afd')
+sha512sums=('7f8180cb0c9b4a27caacceb6e48a2e5137b01daa6163b102ebddc1a958ab804904785b4cd634a3da0b7f5ba0081bad1c510d8d133dc73ad1223f24665135cf9e'
+            'bcaf2a67bdc37e388931c458cf08fcb0bb05de2c83de51770b700b9aba2cece578366aec90c0edfa18e71cf688b7c203684da4c69a3fae17e7e253f0082036dd'
+            '0b1cb630ffb9e0226bb772e703373ce031f57d58313c69a549deca7b0011ec1bc90f7803682897d9daa779bc0aecebd17ca6f0b1399506f576bdd2f374d8b0d1')
 
 prepare(){
 	echo "$(ls)"
@@ -50,13 +52,16 @@ package() {
     mkdir -p "${pkgdir}/usr/src/${_pkgname}-${pkgver}"
     ln -s ${srcdir}/tuxedo-drivers ${srcdir}/${_pkgname}-${pkgver}
 
-    install -Dm644 "${_pkgname%}-$pkgver"/debian/tuxedo-drivers.dkms "${pkgdir}/usr/src/${_pkgname%}-$pkgver/dkms.conf"
-    sed -i "s/#MODULE_VERSION#/${pkgver}/" "${pkgdir}/usr/src/${_pkgname%}-$pkgver/dkms.conf"
+    install -Dm644 "${srcdir}/dkms.conf" "${pkgdir}/usr/src/${_pkgname}-${pkgver}/dkms.conf"
+    sed -i "s/#MODULE_VERSION#/${pkgver}/" "${pkgdir}/usr/src/${_pkgname}-${pkgver}/dkms.conf"
 
-    install -Dm644 "${_pkgname%}-$pkgver"/usr/lib/modprobe.d/*.conf -t "$pkgdir/usr/lib/modprobe.d/"
-    install -Dm644 "${_pkgname%}-$pkgver"/usr/lib/udev/rules.d/*.rules -t "$pkgdir/usr/lib/udev/rules.d/"
-    install -Dm644 "${_pkgname%}-$pkgver"/usr/lib/udev/hwdb.d/*.hwdb -t "$pkgdir/usr/lib/udev/hwdb.d/"
+    local _files_dir="${_pkgname}-${pkgver}/files/usr/lib"
+    [[ ! -d "$_files_dir" ]] && _files_dir="${_pkgname}-${pkgver}/usr/lib"
 
-    cp -avr "${_pkgname%}-$pkgver"/src/* "$pkgdir/usr/src/${_pkgname%}-$pkgver/"
+    install -Dm644 "$_files_dir"/modprobe.d/*.conf -t "$pkgdir/usr/lib/modprobe.d/"
+    install -Dm644 "$_files_dir"/udev/rules.d/*.rules -t "$pkgdir/usr/lib/udev/rules.d/"
+    install -Dm644 "$_files_dir"/udev/hwdb.d/*.hwdb -t "$pkgdir/usr/lib/udev/hwdb.d/"
+
+    cp -avr "${_pkgname}-${pkgver}"/src/* "$pkgdir/usr/src/${_pkgname}-${pkgver}/"
 }
 
