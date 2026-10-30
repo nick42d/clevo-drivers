@@ -10,13 +10,24 @@ makepkg:
 namcap:
     namcap --info PKGBUILD
     
+# Extract latest upstream version from package.yml
+[private]
+upstream-version file="tuxedo-drivers/package.yml":
+    #!/usr/bin/env bash
+    ver=$(sed -E -n '/^changelog:/,$ { /^[[:space:]]*-[[:space:]]*version:[[:space:]]*/ { s/^[[:space:]]*-[[:space:]]*version:[[:space:]]*["\x27]*([0-9]+(\.[0-9]+)+).*/\1/p; q } }' "{{file}}")
+    if [ -z "$ver" ]; then
+        echo "Error: Failed to extract upstream version from {{file}}" >&2
+        exit 1
+    fi
+    echo "$ver"
+
 # Check if upstream has updated version
 check-upstream-ver: 
     #!/usr/bin/env bash
     cur_ver=$(grep -oP '^pkgver=\K(\d+\.)*\d+' PKGBUILD)
     rm -rf tuxedo-drivers/
     git clone https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers.git
-    new_ver=$(grep -Pom1 '.* \(\K.*(?=\) .*; urgency=.*)' tuxedo-drivers/debian/changelog) 
+    new_ver=$(just upstream-version)
     if [ "$cur_ver" != "$new_ver" ]; then
         echo "Upstream version $new_ver not equal to local version $cur_ver"
         exit 1
@@ -31,7 +42,7 @@ update-to-upstream:
     cur_ver=$(grep -oP '^pkgver=\K(\d+\.)*\d+' PKGBUILD)
     rm -rf pkg/ src/ tuxedo-drivers/
     git clone https://gitlab.com/tuxedocomputers/development/packages/tuxedo-drivers.git
-    new_ver=$(grep -Pom1 '.* \(\K.*(?=\) .*; urgency=.*)' tuxedo-drivers/debian/changelog) 
+    new_ver=$(just upstream-version)
     if [ "$cur_ver" != "$new_ver" ]; then
         echo "Updating PKGBUILD to $new_ver from $cur_ver"
         kernel_ver=$(uname -r)
