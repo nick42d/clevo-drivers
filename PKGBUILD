@@ -55,12 +55,9 @@ package() {
     install -Dm644 "${srcdir}/dkms.conf" "${pkgdir}/usr/src/${_pkgname}-${pkgver}/dkms.conf"
     sed -i "s/#MODULE_VERSION#/${pkgver}/" "${pkgdir}/usr/src/${_pkgname}-${pkgver}/dkms.conf"
 
-    local _files_dir="${_pkgname}-${pkgver}/files/usr/lib"
-    [[ ! -d "$_files_dir" ]] && _files_dir="${_pkgname}-${pkgver}/usr/lib"
-
-    install -Dm644 "$_files_dir"/modprobe.d/*.conf -t "$pkgdir/usr/lib/modprobe.d/"
-    install -Dm644 "$_files_dir"/udev/rules.d/*.rules -t "$pkgdir/usr/lib/udev/rules.d/"
-    install -Dm644 "$_files_dir"/udev/hwdb.d/*.hwdb -t "$pkgdir/usr/lib/udev/hwdb.d/"
+    install -Dm644 "${_pkgname}-${pkgver}"/files/usr/lib/modprobe.d/*.conf -t "$pkgdir/usr/lib/modprobe.d/"
+    install -Dm644 "${_pkgname}-${pkgver}"/files/usr/lib/udev/rules.d/*.rules -t "$pkgdir/usr/lib/udev/rules.d/"
+    install -Dm644 "${_pkgname}-${pkgver}"/files/usr/lib/udev/hwdb.d/*.hwdb -t "$pkgdir/usr/lib/udev/hwdb.d/"
 
     cp -avr "${_pkgname}-${pkgver}"/src/* "$pkgdir/usr/src/${_pkgname}-${pkgver}/"
 }
