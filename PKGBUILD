@@ -39,18 +39,15 @@ sha512sums=('7f8180cb0c9b4a27caacceb6e48a2e5137b01daa6163b102ebddc1a958ab8049047
             '0b1cb630ffb9e0226bb772e703373ce031f57d58313c69a549deca7b0011ec1bc90f7803682897d9daa779bc0aecebd17ca6f0b1399506f576bdd2f374d8b0d1')
 
 prepare(){
-	echo "$(ls)"
-	cd ${srcdir}/tuxedo-drivers
-	echo "Current directory is: $(pwd)"
-	pkgver=$(git tag | tail -1 | tr -d "v")
-	echo "pkgver is "${pkgver}
-	patch -Np1 -i ../patch.diff
+    cd "${srcdir}/tuxedo-drivers"
+    echo "Applying patch.diff to tuxedo-drivers..."
+    patch -Np1 -i ../patch.diff
 }
 
 package() {
     echo "Package step"
     mkdir -p "${pkgdir}/usr/src/${_pkgname}-${pkgver}"
-    ln -s ${srcdir}/tuxedo-drivers ${srcdir}/${_pkgname}-${pkgver}
+    ln -sfn "${srcdir}/tuxedo-drivers" "${srcdir}/${_pkgname}-${pkgver}"
 
     install -Dm644 "${srcdir}/dkms.conf" "${pkgdir}/usr/src/${_pkgname}-${pkgver}/dkms.conf"
     sed -i "s/#MODULE_VERSION#/${pkgver}/" "${pkgdir}/usr/src/${_pkgname}-${pkgver}/dkms.conf"

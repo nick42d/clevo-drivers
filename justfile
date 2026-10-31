@@ -91,3 +91,7 @@ install *flags:
 # Uninstall package locally
 uninstall *flags:
     sudo pacman -R clevo-drivers-dkms-git {{flags}}
+
+# Clean build artifacts, cloned sources, built packages, and backup files
+clean:
+    rm -rf pkg/ src/ tuxedo-drivers/ aur/ *.bak .*.bak *.pkg.tar*
