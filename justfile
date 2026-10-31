@@ -45,6 +45,7 @@ update-to-upstream:
         pwd=$(pwd)
         cp PKGBUILD PKGBUILD.bak
         cp .SRCINFO .SRCINFO.bak
+        cp dkms.conf dkms.conf.bak
         ./generate-dkms-conf.py {{pkg_yml}} dkms.conf
         sed -i "s/^pkgver=$cur_ver/pkgver=$new_ver/" PKGBUILD
         sed -i "s/^pkgrel=.*/pkgrel=1/" PKGBUILD
@@ -55,9 +56,10 @@ update-to-upstream:
             echo "Update successful"
             exit 0
         else
-            echo "New PKGBUILD / .SRCINFO failed - reverting"
+            echo "New PKGBUILD / .SRCINFO / dkms.conf failed - reverting"
             cp PKGBUILD.bak PKGBUILD
             cp .SRCINFO.bak .SRCINFO
+            cp dkms.conf.bak dkms.conf
             exit 1
         fi
     else 
@@ -78,5 +80,6 @@ push-to-aur COMMIT-MSG:
     cp patch.diff aur/patch.diff
     cp dkms.conf aur/dkms.conf
     cd aur
-    git commit -am '{{COMMIT-MSG}}'
+    git add PKGBUILD .SRCINFO patch.diff dkms.conf
+    git commit -m '{{COMMIT-MSG}}'
     git push
