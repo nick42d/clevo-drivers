@@ -83,3 +83,11 @@ push-to-aur COMMIT-MSG:
     git add PKGBUILD .SRCINFO patch.diff dkms.conf
     git commit -m '{{COMMIT-MSG}}'
     git push
+
+# Build and install package locally
+install *flags:
+    makepkg -si -f {{flags}}
+
+# Uninstall package locally
+uninstall *flags:
+    sudo pacman -R clevo-drivers-dkms-git {{flags}}
